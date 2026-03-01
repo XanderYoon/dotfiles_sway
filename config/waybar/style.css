@@ -1,0 +1,53 @@
+@import "theme.css";
+
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 11px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: @background;
+  color: @foreground;
+}
+
+#workspaces button,
+#clock,
+#cpu,
+#memory,
+#custom-gpu,
+#custom-theme,
+#custom-caffeine,
+#network,
+#custom-power {
+  padding: 0 10px;
+  margin: 4px 0;
+}
+
+#workspaces button {
+  color: @foreground;
+  background: transparent;
+}
+
+#workspaces button.focused {
+  background: @focused_background;
+  color: @focused_foreground;
+}
+
+#workspaces button.urgent {
+  background: @urgent_background;
+  color: @urgent_foreground;
+}
+
+#clock {
+  font-weight: 600;
+}
+
+#custom-theme,
+#custom-caffeine,
+#network,
+#custom-power {
+  margin-left: 6px;
+}

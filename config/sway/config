@@ -1,0 +1,130 @@
+# Sway config aligned with the existing i3 workflow.
+
+set $mod Mod4
+set $alt Mod1
+
+font pango:JetBrainsMono Nerd Font 11
+
+# Autostart
+exec --no-startup-id sh -c 'command -v dex >/dev/null 2>&1 && dex --autostart --environment sway'
+exec --no-startup-id sh -c 'command -v nm-applet >/dev/null 2>&1 && nm-applet --indicator'
+exec_always --no-startup-id sh -lc 'sleep 0.5; ~/.config/theme/apply-theme.sh'
+exec --no-startup-id sh -c 'command -v swayidle >/dev/null 2>&1 && command -v swaylock >/dev/null 2>&1 && swayidle -w timeout 300 "swaylock -f" before-sleep "swaylock -f"'
+exec --no-startup-id sh -c 'command -v waybar >/dev/null 2>&1 && waybar'
+
+# Keep output bindings commented until you confirm your Wayland connector names.
+# Example:
+# output DP-1 resolution 2560x1440 position 0 0
+# output HDMI-A-1 resolution 1920x1080 position 2560 0
+
+input type:keyboard {
+    repeat_delay 300
+    repeat_rate 25
+}
+
+set $term kitty
+set $menu wofi --show drun
+set $shotdir $HOME/Pictures/screenshots
+
+floating_modifier $mod
+tiling_drag enable
+focus_wrapping no
+
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders smart
+gaps inner 7
+gaps outer 10
+
+bindsym $mod+Return exec $term
+bindsym $mod+d exec $menu
+bindsym $mod+Shift+q kill
+
+bindsym XF86AudioPlay exec --no-startup-id playerctl --player=spotify play-pause
+bindsym XF86AudioPause exec --no-startup-id playerctl --player=spotify pause
+bindsym XF86AudioStop exec --no-startup-id playerctl --player=spotify stop
+bindsym XF86AudioNext exec --no-startup-id playerctl --player=spotify next
+bindsym XF86AudioPrev exec --no-startup-id playerctl --player=spotify previous
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+v splitv
+bindsym $mod+b splith
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+
+set $ws1  "1:M1"
+set $ws2  "2:M2"
+set $ws3  "3:M3"
+set $ws4  "4:M4"
+set $ws5  "5:M5"
+set $ws6  "6:A1"
+set $ws7  "7:A2"
+set $ws8  "8:A3"
+set $ws9  "9:A4"
+set $ws10 "10:A5"
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $alt+1 workspace $ws6
+bindsym $alt+2 workspace $ws7
+bindsym $alt+3 workspace $ws8
+bindsym $alt+4 workspace $ws9
+bindsym $alt+5 workspace $ws10
+
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $alt+Shift+1 move container to workspace $ws6
+bindsym $alt+Shift+2 move container to workspace $ws7
+bindsym $alt+Shift+3 move container to workspace $ws8
+bindsym $alt+Shift+4 move container to workspace $ws9
+bindsym $alt+Shift+5 move container to workspace $ws10
+
+mode "resize" {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit sway? This will end your session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+bindsym Print exec --no-startup-id sh -c 'mkdir -p "$HOME/Pictures/screenshots" && grim "$HOME/Pictures/screenshots/$(date +%F_%T).png"'
+bindsym Shift+Print exec --no-startup-id sh -c 'mkdir -p "$HOME/Pictures/screenshots" && grim -g "$(slurp)" "$HOME/Pictures/screenshots/$(date +%F_%T).png"'
+bindsym $mod+Shift+s exec --no-startup-id sh -c 'grim -g "$(slurp)" - | wl-copy'
+
+include /etc/sway/config.d/*

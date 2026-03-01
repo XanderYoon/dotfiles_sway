@@ -1,0 +1,6 @@
+@define-color background #eff1f5;
+@define-color foreground #4c4f69;
+@define-color focused_background #1e66f5;
+@define-color focused_foreground #ffffff;
+@define-color urgent_background #d20f39;
+@define-color urgent_foreground #ffffff;

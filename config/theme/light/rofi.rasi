@@ -1,0 +1,11 @@
+* {
+  bg0: #eff1f5F2;
+  bg1: #ccd0da;
+  bg3: #1e66f5;
+
+  fg0: #4c4f69;
+  fg1: #dc8a78;
+  fg2: #6c6f85;
+}
+
+@import "../../rofi/rounded-template.rasi"

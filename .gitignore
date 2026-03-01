@@ -1,0 +1,17 @@
+cat << 'EOF' > .gitignore
+# Secrets
+*.key
+*.pem
+*.gpg
+
+# Cache / state
+.cache/
+.local/share/Trash/
+
+# System junk
+.DS_Store
+EOF
+
+# Other Configs
+config/kde/
+config/plasma*

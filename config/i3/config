@@ -1,0 +1,202 @@
+# ─────────────────────────────────────────────
+# i3 config (Vim-style, refactored)
+# ─────────────────────────────────────────────
+
+set $mod Mod4
+set $alt Mod1
+
+# FONTS
+exec_always --no-startup-id sh -c 'source ~/.config/fontconfig/font.sh'
+exec_always --no-startup-id sh -c '[ -f ~/.Xresources ] && xrdb -merge ~/.Xresources'
+font pango: monospace 9 
+
+# ─────────────────────────────────────────────
+# Autostart
+# ─────────────────────────────────────────────
+exec --no-startup-id dex --autostart --environment i3
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+
+# Enable NumLock on startup
+exec --no-startup-id numlockx on
+
+# Network manager (tray intentionally unused, but harmless)
+exec --no-startup-id nm-applet
+exec --no-startup-id ~/.config/i3/autorandr.sh
+
+# Theme (light / dark)
+exec_always --no-startup-id ~/.config/theme/apply-theme.sh
+exec_always --no-startup-id picom --backend xrender --config ~/.config/picom/picom.conf -b
+
+# ─────────────────────────────────────────────
+# Audio keys
+# ─────────────────────────────────────────────
+set $refresh_i3status killall -SIGUSR1 i3status
+
+# Keep system default volume behavior (no startup force + no volume key binds)
+bindsym XF86AudioPlay exec --no-startup-id playerctl --player=spotify play-pause
+bindsym XF86AudioPause exec --no-startup-id playerctl --player=spotify pause
+bindsym XF86AudioStop exec --no-startup-id playerctl --player=spotify stop
+bindsym XF86AudioNext exec --no-startup-id playerctl --player=spotify next
+bindsym XF86AudioPrev exec --no-startup-id playerctl --player=spotify previous
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+bindsym F12 exec --no-startup-id ~/.local/bin/fix-monitors.sh
+
+# ─────────────────────────────────────────────
+# Window behavior
+# ─────────────────────────────────────────────
+floating_modifier $mod
+tiling_drag modifier titlebar
+focus_wrapping no
+
+# Borders & gaps
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders smart
+
+gaps inner 7
+gaps outer 10
+
+# ─────────────────────────────────────────────
+# Applications
+# ─────────────────────────────────────────────
+bindsym $mod+Return exec ~/.local/bin/launch-kitty.sh
+bindsym $mod+d exec --no-startup-id rofi -show drun
+bindsym $mod+Shift+q kill
+
+# ─────────────────────────────────────────────
+# Vim-style focus movement
+# ─────────────────────────────────────────────
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# Vim-style window movement
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# Arrow keys (fallback)
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# ─────────────────────────────────────────────
+# Layout & containers
+# ─────────────────────────────────────────────
+bindsym $mod+v split v
+bindsym $mod+b split h
+
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+
+# ─────────────────────────────────────────────
+# Workspaces (numeric prefix enforces order)
+# ─────────────────────────────────────────────
+
+set $ws1  "1:M1"
+set $ws2  "2:M2"
+set $ws3  "3:M3"
+set $ws4  "4:M4"
+set $ws5  "5:M5"
+
+set $ws6  "6:A1"
+set $ws7  "7:A2"
+set $ws8  "8:A3"
+set $ws9  "9:A4"
+set $ws10 "10:A5"
+
+# Output binding
+workspace $ws1  output DP-0
+workspace $ws2  output DP-0
+workspace $ws3  output DP-0
+workspace $ws4  output DP-0
+workspace $ws5  output DP-0
+
+workspace $ws6  output HDMI-0
+workspace $ws7  output HDMI-0
+workspace $ws8  output HDMI-0
+workspace $ws9  output HDMI-0
+workspace $ws10 output HDMI-0
+
+
+# Focus
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+
+bindsym $alt+1 workspace $ws6
+bindsym $alt+2 workspace $ws7
+bindsym $alt+3 workspace $ws8
+bindsym $alt+4 workspace $ws9
+bindsym $alt+5 workspace $ws10
+
+# Move container
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+
+bindsym $alt+Shift+1 move container to workspace $ws6
+bindsym $alt+Shift+2 move container to workspace $ws7
+bindsym $alt+Shift+3 move container to workspace $ws8
+bindsym $alt+Shift+4 move container to workspace $ws9
+bindsym $alt+Shift+5 move container to workspace $ws10
+
+# ─────────────────────────────────────────────
+# Resize mode (Vim-style)
+# ─────────────────────────────────────────────
+mode "resize" {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+
+    bindsym --release Return mode "default"
+    bindsym --release Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+# ─────────────────────────────────────────────
+# Reload / restart / exit
+# ─────────────────────────────────────────────
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+
+bindsym $mod+Shift+e exec \
+  "i3-nagbar -t warning -m 'Exit i3? This will end your session.' \
+   -B 'Yes, exit i3' 'i3-msg exit'"
+
+
+# ─────────────────────────────────────────────
+# Screenshots
+# ─────────────────────────────────────────────
+set $shotdir ~/Pictures/screenshots
+
+# Full screen
+bindsym Print exec --no-startup-id maim "$shotdir/$(date +%F_%T).png"
+# Select area
+bindsym Shift+Print exec --no-startup-id maim -s "$shotdir/$(date +%F_%T).png"
+# Active window
+bindsym Ctrl+Print exec --no-startup-id maim -i $(xdotool getactivewindow) "$shotdir/$(date +%F_%T).png"
+# Area → clipboard
+bindsym $mod+Shift+s exec --no-startup-id maim -s | xclip -selection clipboard -t image/png
+
+# ─────────────────────────────────────────────
+# Polybar
+# ─────────────────────────────────────────────
+exec_always --no-startup-id ~/.config/polybar/launch.sh

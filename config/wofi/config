@@ -1,0 +1,8 @@
+show=drun
+prompt=Run
+width=35%
+height=45%
+insensitive=true
+allow_images=true
+term=kitty
+style=~/.config/wofi/style.css
