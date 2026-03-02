@@ -1,4 +1,4 @@
-# Sway config aligned with the existing i3 workflow.
+# Sway config.
 
 set $mod Mod4
 set $alt Mod1
@@ -35,6 +35,14 @@ default_floating_border pixel 2
 hide_edge_borders smart
 gaps inner 7
 gaps outer 10
+
+# Fallback client colors; the active theme overwrites these at startup.
+client.focused #89b4fa #89b4fa #1e1e2e #89b4fa #89b4fa
+client.focused_inactive #45475a #45475a #cdd6f4 #45475a #45475a
+client.unfocused #313244 #313244 #bac2de #313244 #313244
+client.urgent #f38ba8 #f38ba8 #11111b #f38ba8 #f38ba8
+client.placeholder #585b70 #585b70 #cdd6f4 #585b70 #585b70
+client.background #11111b
 
 bindsym $mod+Return exec $term
 bindsym $mod+d exec $menu

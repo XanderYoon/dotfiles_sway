@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 THEME_FILE="$HOME/.config/theme/current"
 THEME="dark"
 
@@ -27,11 +28,11 @@ if [[ -f "$FONT_CONFIG" ]]; then
   source "$FONT_CONFIG"
 fi
 
-ROFI_DIR="$HOME/.config/rofi"
 WAYBAR_DIR="$HOME/.config/waybar"
 WOFI_DIR="$HOME/.config/wofi"
+NVIM_THEME_DIR="$HOME/.config/nvim/themes"
 
-mkdir -p "$ROFI_DIR" "$WAYBAR_DIR" "$WOFI_DIR"
+mkdir -p "$WAYBAR_DIR" "$WOFI_DIR" "$NVIM_THEME_DIR"
 
 if [[ -n "${FONT_MONO:-}" && -n "${FONT_MONO_SIZE:-}" ]]; then
   mkdir -p "$HOME/.config/kitty"
@@ -45,16 +46,7 @@ if command -v kitty >/dev/null 2>&1; then
   kitty +kitten themes --reload-in=all "$KITTY_THEME" || true
 fi
 
-if [[ -f "$PICOM_OPACITY" ]]; then
-  cat "$PICOM_OPACITY" >"$HOME/.config/picom/active-opacity.conf"
-fi
-
-ln -sf "$NVIM_THEME" "$HOME/.config/nvim/themes/current.lua"
-ln -sf "$YAZI_THEME" "$HOME/.config/yazi/theme.toml"
-
-if [[ -f "$ROFI_THEME" ]]; then
-  printf '@import "%s"\n' "$ROFI_THEME" >"$ROFI_DIR/current-theme.rasi"
-fi
+ln -sf "$NVIM_THEME" "$NVIM_THEME_DIR/current.lua"
 
 if [[ -n "${WAYBAR_THEME:-}" && -f "$WAYBAR_THEME" ]]; then
   cp -f "$WAYBAR_THEME" "$WAYBAR_DIR/theme.css"
@@ -64,21 +56,31 @@ if [[ -n "${WOFI_THEME:-}" && -f "$WOFI_THEME" ]]; then
   cp -f "$WOFI_THEME" "$WOFI_DIR/theme.css"
 fi
 
-POLYBAR_THEME_SRC="$HOME/.dotfiles/config/theme/$THEME/polybar.ini"
-if [[ -f "$POLYBAR_THEME_SRC" ]]; then
-  cp -f "$POLYBAR_THEME_SRC" "$HOME/.config/polybar/theme.ini"
-fi
-
 wallpaper_applied=0
 
 if [[ -n "${SWAYSOCK:-}" ]] && command -v swaymsg >/dev/null 2>&1; then
+  if [[ -n "${SWAY_CLIENT_FOCUSED:-}" ]]; then
+    swaymsg "client.focused $SWAY_CLIENT_FOCUSED" >/dev/null 2>&1 || true
+  fi
+  if [[ -n "${SWAY_CLIENT_FOCUSED_INACTIVE:-}" ]]; then
+    swaymsg "client.focused_inactive $SWAY_CLIENT_FOCUSED_INACTIVE" >/dev/null 2>&1 || true
+  fi
+  if [[ -n "${SWAY_CLIENT_UNFOCUSED:-}" ]]; then
+    swaymsg "client.unfocused $SWAY_CLIENT_UNFOCUSED" >/dev/null 2>&1 || true
+  fi
+  if [[ -n "${SWAY_CLIENT_URGENT:-}" ]]; then
+    swaymsg "client.urgent $SWAY_CLIENT_URGENT" >/dev/null 2>&1 || true
+  fi
+  if [[ -n "${SWAY_CLIENT_PLACEHOLDER:-}" ]]; then
+    swaymsg "client.placeholder $SWAY_CLIENT_PLACEHOLDER" >/dev/null 2>&1 || true
+  fi
+  if [[ -n "${SWAY_CLIENT_BACKGROUND:-}" ]]; then
+    swaymsg "client.background $SWAY_CLIENT_BACKGROUND" >/dev/null 2>&1 || true
+  fi
+
   if swaymsg output '*' bg "$WALLPAPER" fill >/dev/null 2>&1; then
     wallpaper_applied=1
   fi
-fi
-
-if [[ $wallpaper_applied -eq 0 ]] && command -v feh >/dev/null 2>&1; then
-  feh --no-xinerama --bg-fill "$WALLPAPER"
 fi
 
 if command -v gsettings >/dev/null 2>&1; then
@@ -96,16 +98,7 @@ if command -v gsettings >/dev/null 2>&1; then
   fi
 fi
 
-if [[ -n "${DISPLAY:-}" ]] && command -v picom >/dev/null 2>&1; then
-  pkill picom >/dev/null 2>&1 || true
-  picom --backend xrender --config "$HOME/.config/picom/picom.conf" -b >/dev/null 2>&1 || true
-fi
-
 pkill -USR1 nvim || true
-
-if command -v polybar-msg >/dev/null 2>&1; then
-  polybar-msg cmd restart >/dev/null 2>&1 || true
-fi
 
 if pgrep -x waybar >/dev/null 2>&1; then
   pkill -SIGUSR2 waybar >/dev/null 2>&1 || true

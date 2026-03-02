@@ -1,9 +1,0 @@
-configuration {
-  modi: "drun";
-  show-icons: true;
-  display-drun: " ";
-  drun-display-format: "{name}";
-  kb-cancel: "Escape,Super+d";
-}
-@theme "current-theme"
-

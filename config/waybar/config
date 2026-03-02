@@ -38,7 +38,7 @@
   },
   "custom/theme": {
     "interval": 2,
-    "exec": "~/.config/polybar/theme-status.sh",
+    "exec": "~/.config/theme/theme-status.sh",
     "return-type": "text",
     "on-click": "~/.config/theme/toggle-theme.sh"
   },

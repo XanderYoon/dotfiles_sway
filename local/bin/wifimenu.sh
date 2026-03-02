@@ -10,8 +10,6 @@ show_menu() {
 
   if command -v wofi >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
     wofi --dmenu --prompt "$prompt"
-  elif command -v rofi >/dev/null 2>&1; then
-    rofi -dmenu -i -p "$prompt"
   else
     cat
   fi
@@ -22,8 +20,6 @@ show_password_prompt() {
 
   if command -v wofi >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
     wofi --dmenu --password --prompt "$prompt"
-  elif command -v rofi >/dev/null 2>&1; then
-    rofi -dmenu -password -p "$prompt"
   else
     cat
   fi

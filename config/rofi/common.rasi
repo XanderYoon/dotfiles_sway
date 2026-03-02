@@ -1,7 +1,0 @@
-* {
-  font: "${env:FONT_UI} ${env:FONT_UI_SIZE}";
-  selected-normal-background: #285577;
-  selected-active-background: #285577;
-  selected-urgent-background: #285577;
-}
-

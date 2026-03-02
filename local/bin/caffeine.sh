@@ -3,7 +3,7 @@
 set -euo pipefail
 
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp}"
-STATE_DIR="$RUNTIME_DIR/polybar-caffeine"
+STATE_DIR="$RUNTIME_DIR/wayland-caffeine"
 PID_FILE="$STATE_DIR/inhibitor.pid"
 
 mkdir -p "$STATE_DIR"
@@ -23,8 +23,8 @@ start_inhibitor() {
 
   systemd-inhibit \
     --what=idle:sleep \
-    --who="polybar-caffeine" \
-    --why="User enabled caffeine mode from polybar" \
+    --who="wayland-caffeine" \
+    --why="User enabled caffeine mode from the Wayland bar" \
     bash -c 'while :; do sleep 3600; done' >/dev/null 2>&1 &
 
   echo "$!" >"$PID_FILE"
