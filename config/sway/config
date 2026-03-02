@@ -45,6 +45,8 @@ hide_edge_borders smart
 gaps inner 7
 gaps outer 10
 
+for_window [app_id="wofi"] border none
+
 # Fallback client colors; the active theme overwrites these at startup.
 client.focused #89b4fa #89b4fa #1e1e2e #89b4fa #89b4fa
 client.focused_inactive #45475a #45475a #cdd6f4 #45475a #45475a
