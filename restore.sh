@@ -46,11 +46,6 @@ for src in "$DOTFILES_ROOT"/local/*; do
   link "$src" "$HOME/.local/$(basename "$src")"
 done
 
-# Rebuild generated theme files (kitty fonts, bar themes, wallpaper, etc.)
-if [[ -x "$HOME/.config/theme/apply-theme.sh" ]]; then
-  "$HOME/.config/theme/apply-theme.sh"
-fi
-
 # If restore is run from a live Sway session, reload so the current session picks up the linked config.
 if [[ -n "${SWAYSOCK:-}" ]] && command -v swaymsg >/dev/null 2>&1; then
   swaymsg reload >/dev/null 2>&1 || true

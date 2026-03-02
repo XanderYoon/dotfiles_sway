@@ -1,1 +1,2 @@
-dofile(vim.fn.stdpath("config") .. "/themes/current.lua")
+vim.o.background = "dark"
+vim.cmd.colorscheme("catppuccin")

@@ -9,13 +9,18 @@
     "cpu",
     "memory",
     "custom/gpu",
+    "custom/separator",
     "custom/caffeine",
     "network",
     "custom/power"
   ],
   "sway/workspaces": {
     "disable-scroll": true,
-    "all-outputs": true,
+    "all-outputs": false,
+    "persistent-workspaces": {
+      "DP-1": ["1:M1", "2:M2", "3:M3", "4:M4", "5:M5"],
+      "DP-2": ["6:A1", "7:A2", "8:A3", "9:A4", "10:A5"]
+    },
     "format": "{name}"
   },
   "clock": {
@@ -35,9 +40,15 @@
     "exec": "/home/alexander-yoon/.local/bin/gpu-usage.sh",
     "return-type": "text"
   },
+  "custom/separator": {
+    "exec": "printf '|'",
+    "interval": "once",
+    "return-type": "text",
+    "tooltip": false
+  },
   "custom/caffeine": {
     "interval": 2,
-    "exec": "/home/alexander-yoon/.local/bin/caffeine.sh  status",
+    "exec": "/home/alexander-yoon/.local/bin/caffeine.sh status",
     "signal": 1,
     "return-type": "text",
     "on-click": "/home/alexander-yoon/.local/bin/caffeine.sh toggle"

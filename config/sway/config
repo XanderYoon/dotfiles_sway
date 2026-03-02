@@ -9,17 +9,16 @@ seat seat0 xcursor_theme Adwaita 24
 # Autostart
 exec --no-startup-id sh -c 'command -v dex >/dev/null 2>&1 && dex --autostart --environment sway'
 exec --no-startup-id sh -c 'command -v nm-applet >/dev/null 2>&1 && nm-applet --indicator'
-exec_always --no-startup-id sh -lc 'sleep 0.5; ~/.config/theme/apply-theme.sh'
 exec --no-startup-id sh -c 'command -v swayidle >/dev/null 2>&1 && command -v swaylock >/dev/null 2>&1 && swayidle -w timeout 300 "swaylock -f" before-sleep "swaylock -f"'
-exec --no-startup-id sh -c 'command -v waybar >/dev/null 2>&1 && waybar'
 exec_always --no-startup-id dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 exec_always --no-startup-id mako
-exec_always waybar
+exec_always --no-startup-id sh -c 'pkill -x waybar >/dev/null 2>&1 || true; waybar'
 
 # Keep output bindings commented until you confirm your Wayland connector names.
 # Example: 
 output DP-1 scale 1.5
 output DP-2 scale 1.5
+output * bg /home/alexander-yoon/.dotfiles_sway/config/theme/dark/wallpaper.jpg fill
 
 input type:keyboard {
     repeat_delay 300
@@ -104,6 +103,17 @@ set $ws7  "7:A2"
 set $ws8  "8:A3"
 set $ws9  "9:A4"
 set $ws10 "10:A5"
+
+workspace $ws1 output DP-1
+workspace $ws2 output DP-1
+workspace $ws3 output DP-1
+workspace $ws4 output DP-1
+workspace $ws5 output DP-1
+workspace $ws6 output DP-2
+workspace $ws7 output DP-2
+workspace $ws8 output DP-2
+workspace $ws9 output DP-2
+workspace $ws10 output DP-2
 
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2

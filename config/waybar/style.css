@@ -1,4 +1,9 @@
-@import "theme.css";
+@define-color background #1e1e2e;
+@define-color foreground #cdd6f4;
+@define-color focused_background #89b4fa;
+@define-color focused_foreground #1e1e2e;
+@define-color urgent_background #f38ba8;
+@define-color urgent_foreground #1e1e2e;
 
 * {
   border: none;
@@ -18,6 +23,7 @@ window#waybar {
 #cpu,
 #memory,
 #custom-gpu,
+#custom-separator,
 #custom-caffeine,
 #network,
 #custom-power {
@@ -42,6 +48,12 @@ window#waybar {
 
 #clock {
   font-weight: 600;
+}
+
+#custom-separator {
+  padding: 0 4px;
+  margin: 4px 2px 4px 4px;
+  color: @focused_background;
 }
 
 #custom-caffeine,
