@@ -4,7 +4,6 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 THEME_DIR="$SCRIPT_DIR/dark"
 THEME_CONFIG="$THEME_DIR/theme.sh"
-FONT_CONFIG="$HOME/.config/theme/font.sh"
 
 if [[ ! -f "$THEME_CONFIG" ]]; then
   echo "Missing theme config: $THEME_CONFIG" >&2
@@ -14,24 +13,11 @@ fi
 # shellcheck source=/dev/null
 source "$THEME_CONFIG"
 
-if [[ -f "$FONT_CONFIG" ]]; then
-  # shellcheck source=/dev/null
-  source "$FONT_CONFIG"
-fi
-
 WAYBAR_DIR="$HOME/.config/waybar"
 WOFI_DIR="$HOME/.config/wofi"
 NVIM_THEME_DIR="$HOME/.config/nvim/themes"
 
 mkdir -p "$WAYBAR_DIR" "$WOFI_DIR" "$NVIM_THEME_DIR"
-
-if [[ -n "${FONT_MONO:-}" && -n "${FONT_MONO_SIZE:-}" ]]; then
-  mkdir -p "$HOME/.config/kitty"
-  cat >"$HOME/.config/kitty/fonts.conf" <<EOF
-font_family ${FONT_MONO}
-font_size ${FONT_MONO_SIZE}
-EOF
-fi
 
 if command -v kitty >/dev/null 2>&1; then
   kitty +kitten themes --reload-in=all "$KITTY_THEME" || true

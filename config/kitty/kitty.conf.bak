@@ -1,9 +1,0 @@
-include fonts.conf
-
-# BEGIN_KITTY_THEME
-# Catppuccin-Latte
-include current-theme.conf
-# END_KITTY_THEME
-
-# --- user overrides (never rewritten) ---
-include overrides/current-contrast.conf

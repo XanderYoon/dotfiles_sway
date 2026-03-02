@@ -33,6 +33,7 @@ input type:pointer {
 
 set $term /home/alexander-yoon/.local/bin/launch-kitty.sh
 set $menu wofi --show drun
+set $mediactl /home/alexander-yoon/.dotfiles_sway/local/bin/mediactl.sh
 set $shotdir $HOME/Pictures/screenshots
 
 floating_modifier $mod
@@ -57,11 +58,14 @@ bindsym $mod+Return exec $term
 bindsym $mod+d exec $menu
 bindsym $mod+Shift+q kill
 
-bindsym XF86AudioPlay exec --no-startup-id playerctl --player=spotify play-pause
-bindsym XF86AudioPause exec --no-startup-id playerctl --player=spotify pause
-bindsym XF86AudioStop exec --no-startup-id playerctl --player=spotify stop
-bindsym XF86AudioNext exec --no-startup-id playerctl --player=spotify next
-bindsym XF86AudioPrev exec --no-startup-id playerctl --player=spotify previous
+bindsym --locked --inhibited XF86AudioPlay exec --no-startup-id $mediactl play-pause
+bindsym --locked --inhibited XF86AudioMedia exec --no-startup-id $mediactl play-pause
+bindsym --locked --inhibited XF86AudioPause exec --no-startup-id $mediactl pause
+bindsym --locked --inhibited XF86AudioStop exec --no-startup-id $mediactl stop
+bindsym --locked --inhibited XF86AudioNext exec --no-startup-id $mediactl next
+bindsym --locked --inhibited XF86AudioForward exec --no-startup-id $mediactl next
+bindsym --locked --inhibited XF86AudioPrev exec --no-startup-id $mediactl previous
+bindsym --locked --inhibited XF86AudioRewind exec --no-startup-id $mediactl previous
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
 bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 

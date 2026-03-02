@@ -37,7 +37,7 @@
   },
   "custom/caffeine": {
     "interval": 2,
-    "exec": "/home/alexander-yoon/.local/bin/caffeine.sh status",
+    "exec": "/home/alexander-yoon/.local/bin/caffeine.sh  status",
     "signal": 1,
     "return-type": "text",
     "on-click": "/home/alexander-yoon/.local/bin/caffeine.sh toggle"

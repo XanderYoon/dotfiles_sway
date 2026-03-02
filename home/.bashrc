@@ -133,3 +133,15 @@ else
 fi
 unset __mamba_setup
 # <<< mamba initialize <<<
+
+for bash_dir in "$HOME/.bash" "$HOME/.dotfiles_sway/bash"; do
+  if [ -d "$bash_dir" ]; then
+    for script in "$bash_dir"/*.sh; do
+      [ -r "$script" ] || continue
+      . "$script"
+    done
+    break
+  fi
+done
+unset bash_dir
+unset script
