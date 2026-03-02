@@ -8,6 +8,10 @@ PID_FILE="$STATE_DIR/inhibitor.pid"
 
 mkdir -p "$STATE_DIR"
 
+signal_waybar() {
+  pkill -RTMIN+1 waybar >/dev/null 2>&1 || true
+}
+
 is_running() {
   [[ -f "$PID_FILE" ]] || return 1
   local pid
@@ -57,12 +61,15 @@ case "${1:-toggle}" in
     else
       start_inhibitor
     fi
+    signal_waybar
     ;;
   on|enable|start)
     start_inhibitor
+    signal_waybar
     ;;
   off|disable|stop)
     stop_inhibitor
+    signal_waybar
     ;;
   status)
     print_status

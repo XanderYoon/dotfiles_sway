@@ -1,8 +1,11 @@
 show=drun
-prompt=Run
-width=35%
-height=45%
+prompt= 
+location=center
+width=640
+height=560
+lines=10
 insensitive=true
 allow_images=true
+image_size=20
 term=kitty
-style=~/.config/wofi/style.css
+style=/home/alexander-yoon/.config/wofi/style.css

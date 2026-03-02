@@ -2,9 +2,14 @@
 
 set -euo pipefail
 
+if command -v wofi >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]] && pgrep -x wofi >/dev/null 2>&1; then
+  pkill -x wofi >/dev/null 2>&1 || true
+  exit 0
+fi
+
 show_menu() {
   if command -v wofi >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
-    wofi --dmenu --prompt Power
+    wofi --dmenu --normal-window --location center --width 640 --height 560 --cache-file /dev/null --prompt Power
   else
     cat
   fi

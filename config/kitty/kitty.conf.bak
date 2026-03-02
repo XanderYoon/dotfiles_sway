@@ -1,5 +1,4 @@
-font_family 
-font_size 
+include fonts.conf
 
 # BEGIN_KITTY_THEME
 # Catppuccin-Latte
@@ -8,4 +7,3 @@ include current-theme.conf
 
 # --- user overrides (never rewritten) ---
 include overrides/current-contrast.conf
-

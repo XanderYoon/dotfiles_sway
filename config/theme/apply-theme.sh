@@ -2,16 +2,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-THEME_FILE="$HOME/.config/theme/current"
-THEME="dark"
-
-if [[ -f "$THEME_FILE" ]]; then
-  THEME=$(cat "$THEME_FILE")
-else
-  echo "$THEME" >"$THEME_FILE"
-fi
-
-THEME_DIR="$HOME/.config/theme/$THEME"
+THEME_DIR="$SCRIPT_DIR/dark"
 THEME_CONFIG="$THEME_DIR/theme.sh"
 FONT_CONFIG="$HOME/.config/theme/font.sh"
 
@@ -78,7 +69,33 @@ if [[ -n "${SWAYSOCK:-}" ]] && command -v swaymsg >/dev/null 2>&1; then
     swaymsg "client.background $SWAY_CLIENT_BACKGROUND" >/dev/null 2>&1 || true
   fi
 
-  if swaymsg output '*' bg "$WALLPAPER" fill >/dev/null 2>&1; then
+  wallpaper_ext="${WALLPAPER##*.}"
+  wallpaper_base="${WALLPAPER%.*}"
+  wallpaper_left="${WALLPAPER_LEFT:-${wallpaper_base}-left.${wallpaper_ext}}"
+  wallpaper_right="${WALLPAPER_RIGHT:-${wallpaper_base}-right.${wallpaper_ext}}"
+
+  if command -v jq >/dev/null 2>&1 && [[ -f "$wallpaper_left" && -f "$wallpaper_right" ]]; then
+    output_names=()
+
+    while IFS= read -r output_name; do
+      output_names+=("$output_name")
+    done < <(
+      swaymsg -t get_outputs -r 2>/dev/null | jq -r '
+        map(select(.active))
+        | sort_by(.rect.x, .rect.y)
+        | .[].name
+      ' 2>/dev/null
+    )
+
+    if (( ${#output_names[@]} >= 2 )); then
+      if swaymsg output "${output_names[0]}" bg "$wallpaper_left" fill >/dev/null 2>&1 \
+        && swaymsg output "${output_names[1]}" bg "$wallpaper_right" fill >/dev/null 2>&1; then
+        wallpaper_applied=1
+      fi
+    fi
+  fi
+
+  if (( wallpaper_applied == 0 )) && swaymsg output '*' bg "$WALLPAPER" fill >/dev/null 2>&1; then
     wallpaper_applied=1
   fi
 fi

@@ -5,11 +5,16 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH
 
 active_marker="*"
 
+if command -v wofi >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]] && pgrep -x wofi >/dev/null 2>&1; then
+  pkill -x wofi >/dev/null 2>&1 || true
+  exit 0
+fi
+
 show_menu() {
   local prompt="$1"
 
   if command -v wofi >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
-    wofi --dmenu --prompt "$prompt"
+    wofi --dmenu --normal-window --location center --width 640 --height 560 --cache-file /dev/null --prompt "$prompt"
   else
     cat
   fi
@@ -19,7 +24,7 @@ show_password_prompt() {
   local prompt="$1"
 
   if command -v wofi >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
-    wofi --dmenu --password --prompt "$prompt"
+    wofi --dmenu --normal-window --location center --width 640 --height 560 --cache-file /dev/null --password --prompt "$prompt"
   else
     cat
   fi
@@ -58,7 +63,7 @@ parse_nmcli_fields() {
 }
 
 mapfile -t networks < <(
-  nmcli --terse -f IN-USE,SSID,SECURITY,SIGNAL dev wifi list
+  nmcli --terse -f IN-USE,SSID,SECURITY,SIGNAL device wifi list --rescan no
 )
 
 choices=()
