@@ -11,6 +11,8 @@ exec --no-startup-id sh -c 'command -v nm-applet >/dev/null 2>&1 && nm-applet --
 exec_always --no-startup-id sh -lc 'sleep 0.5; ~/.config/theme/apply-theme.sh'
 exec --no-startup-id sh -c 'command -v swayidle >/dev/null 2>&1 && command -v swaylock >/dev/null 2>&1 && swayidle -w timeout 300 "swaylock -f" before-sleep "swaylock -f"'
 exec --no-startup-id sh -c 'command -v waybar >/dev/null 2>&1 && waybar'
+exec_always --no-startup-id dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec_always --no-startup-id mako
 
 # Keep output bindings commented until you confirm your Wayland connector names.
 # Example:
@@ -22,7 +24,7 @@ input type:keyboard {
     repeat_rate 25
 }
 
-set $term kitty
+set $term /home/alexander-yoon/.local/bin/launch-kitty.sh
 set $menu wofi --show drun
 set $shotdir $HOME/Pictures/screenshots
 

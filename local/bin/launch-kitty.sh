@@ -3,4 +3,4 @@ set -euo pipefail
 
 export XCURSOR_SIZE="${XCURSOR_SIZE:-12}"
 
-exec kitty "$@"
+exec /home/alexander-yoon/.local/kitty.app/bin/kitty "$@"

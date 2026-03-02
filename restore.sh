@@ -4,6 +4,8 @@ set -e
 DOTFILES_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP_SUFFIX=".pre-dotfiles-sway-$(date +%Y%m%d%H%M%S)"
 
+shopt -s nullglob
+
 link () {
   mkdir -p "$(dirname "$2")"
   if [[ -e "$2" && ! -L "$2" ]]; then
@@ -17,17 +19,32 @@ link () {
   ln -s "$1" "$2"
 }
 
-# ~/.config
-link "$DOTFILES_ROOT/config/kitty"   "$HOME/.config/kitty"
-link "$DOTFILES_ROOT/config/nvim"    "$HOME/.config/nvim"
-link "$DOTFILES_ROOT/config/sway"    "$HOME/.config/sway"
-link "$DOTFILES_ROOT/config/theme"   "$HOME/.config/theme"
-link "$DOTFILES_ROOT/config/waybar"  "$HOME/.config/waybar"
-link "$DOTFILES_ROOT/config/wofi"    "$HOME/.config/wofi"
+# Link each managed config directory into ~/.config.
+for src in "$DOTFILES_ROOT"/config/*; do
+  [[ -e "$src" ]] || continue
+  link "$src" "$HOME/.config/$(basename "$src")"
+done
 
-# ~
-# ~/.local
-link "$DOTFILES_ROOT/local/bin" "$HOME/.local/bin"
+# Link top-level dotfiles from home/ into ~, but keep .local granular.
+for src in "$DOTFILES_ROOT"/home/* "$DOTFILES_ROOT"/home/.[!.]* "$DOTFILES_ROOT"/home/..?*; do
+  [[ -e "$src" ]] || continue
+  [[ "$(basename "$src")" == ".local" ]] && continue
+  link "$src" "$HOME/$(basename "$src")"
+done
+
+# Link files shipped under home/.local individually so we do not replace ~/.local wholesale.
+if [[ -d "$DOTFILES_ROOT/home/.local" ]]; then
+  while IFS= read -r -d '' src; do
+    rel_path="${src#"$DOTFILES_ROOT/home/.local/"}"
+    link "$src" "$HOME/.local/$rel_path"
+  done < <(find "$DOTFILES_ROOT/home/.local" \( -type f -o -type l \) -print0)
+fi
+
+# Link each managed subtree from local/ into ~/.local.
+for src in "$DOTFILES_ROOT"/local/*; do
+  [[ -e "$src" ]] || continue
+  link "$src" "$HOME/.local/$(basename "$src")"
+done
 
 # Rebuild generated theme files (kitty fonts, bar themes, wallpaper, etc.)
 if [[ -x "$HOME/.config/theme/apply-theme.sh" ]]; then

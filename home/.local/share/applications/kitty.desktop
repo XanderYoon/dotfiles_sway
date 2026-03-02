@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Kitty
+Comment=Fast GPU-based terminal emulator
+Exec=/home/alexander-yoon/.local/kitty.app/bin/kitty
+Icon=kitty
+Terminal=false
+Type=Application
+Categories=System;TerminalEmulator;
+StartupNotify=true
