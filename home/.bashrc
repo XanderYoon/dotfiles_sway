@@ -145,3 +145,4 @@ for bash_dir in "$HOME/.bash" "$HOME/.dotfiles_sway/bash"; do
 done
 unset bash_dir
 unset script
+export MAMBA_ROOT_PREFIX="$HOME/micromamba"

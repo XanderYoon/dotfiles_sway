@@ -1,1 +1,0 @@
-/home/alexander-yoon/.config/nvim/themes/catppuccin-mocha.lua

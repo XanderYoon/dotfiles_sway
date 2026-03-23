@@ -17,12 +17,14 @@ exec_always --no-startup-id sh -c 'pkill -x waybar >/dev/null 2>&1 || true; wayb
 # Keep output bindings commented until you confirm your Wayland connector names.
 # Example: 
 output DP-1 scale 1.5
+output DP-1 bg /home/alexander-yoon/.dotfiles_sway/config/sway/wallpaper-left.jpg fill
 output DP-2 scale 1.5
-output * bg /home/alexander-yoon/.dotfiles_sway/config/theme/dark/wallpaper.jpg fill
+output DP-2 bg /home/alexander-yoon/.dotfiles_sway/config/sway/wallpaper-right.jpg fill
 
 input type:keyboard {
     repeat_delay 300
     repeat_rate 25
+    xkb_numlock enabled
 }
 
 input type:pointer {
@@ -47,7 +49,7 @@ gaps outer 10
 
 for_window [app_id="wofi"] border none
 
-# Fallback client colors; the active theme overwrites these at startup.
+# Client colors.
 client.focused #89b4fa #89b4fa #1e1e2e #89b4fa #89b4fa
 client.focused_inactive #45475a #45475a #cdd6f4 #45475a #45475a
 client.unfocused #313244 #313244 #bac2de #313244 #313244
