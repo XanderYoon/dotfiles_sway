@@ -1,7 +1,6 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[](red)\
 $os\
 $username\
 $directory\
@@ -29,6 +28,7 @@ palette = 'catppuccin_mocha'
 [os]
 disabled = false
 style = "bg:red fg:crust"
+format = "[ $symbol]($style)"
 
 [os.symbols]
 Windows = ""

@@ -153,3 +153,8 @@ export NVM_DIR="$HOME/.nvm"
 # >>> Codex installer >>>
 export PATH="/home/alexander-yoon/.local/bin:$PATH"
 # <<< Codex installer <<<
+
+# Use the shared Starship prompt configuration in Bash, including tmux panes.
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init bash)"
+fi
