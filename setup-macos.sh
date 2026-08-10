@@ -23,6 +23,35 @@ link() {
   echo "Linked ${target} -> ${source}"
 }
 
+install_tpm() {
+  local tpm_dir="$HOME/.tmux/plugins/tpm"
+
+  mkdir -p "$(dirname "$tpm_dir")"
+  if [[ ! -d "$tpm_dir/.git" ]]; then
+    git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+  else
+    git -C "$tpm_dir" pull --ff-only
+  fi
+
+  TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins" "$tpm_dir/bin/install_plugins"
+}
+
+ensure_openjdk_wrappers() {
+  local java_home="$HOMEBREW_PREFIX/opt/openjdk/libexec/openjdk.jdk"
+  local java_target="/Library/Java/JavaVirtualMachines/openjdk.jdk"
+
+  if [[ -d "$java_home" && ! -e "$java_target" ]]; then
+    sudo mkdir -p /Library/Java/JavaVirtualMachines
+    sudo ln -sfn "$java_home" "$java_target"
+  fi
+}
+
+if ! xcode-select -p >/dev/null 2>&1; then
+  echo "Xcode Command Line Tools are required before bootstrapping this setup." >&2
+  echo "Run 'xcode-select --install', finish the installer, then run this script again." >&2
+  exit 1
+fi
+
 if ! command -v brew >/dev/null 2>&1; then
   echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -37,13 +66,18 @@ else
   exit 1
 fi
 
-brew install kitty tmux neovim node openjdk ripgrep
+brew install fish git kitty lazygit micromamba neovim node openjdk ripgrep starship tmux uv yazi
 brew install --cask font-jetbrains-mono-nerd-font
 npm install --prefix "$HOME/.local" tree-sitter-cli
+ensure_openjdk_wrappers
 
 link "$repo_root/config/kitty" "$HOME/.config/kitty"
 link "$repo_root/config/nvim" "$HOME/.config/nvim"
-if [[ -f "$repo_root/config/tmux/tmux.conf" ]]; then
-  link "$repo_root/config/tmux/tmux.conf" "$HOME/.tmux.conf"
-fi
+link "$repo_root/config/fish" "$HOME/.config/fish"
+link "$repo_root/config/starship.toml" "$HOME/.config/starship.toml"
+link "$repo_root/config/lazygit/macos" "$HOME/.config/lazygit"
+link "$repo_root/config/tmux/macos" "$HOME/.config/tmux"
+link "$repo_root/config/tmux/macos/tmux.conf" "$HOME/.tmux.conf"
+link "$repo_root/config/yazi" "$HOME/.config/yazi"
+install_tpm
 echo "Setup complete. Restart Kitty to use JetBrainsMono Nerd Font."

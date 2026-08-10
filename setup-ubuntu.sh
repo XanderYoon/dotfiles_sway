@@ -31,7 +31,7 @@ link() {
 }
 
 sudo apt-get update
-sudo apt-get install -y build-essential ca-certificates curl default-jdk fontconfig git kitty neovim nodejs npm ripgrep tmux unzip wl-clipboard
+sudo apt-get install -y build-essential ca-certificates curl default-jdk fish fontconfig git kitty neovim nodejs npm ripgrep tmux unzip wl-clipboard
 npm install --prefix "$HOME/.local" tree-sitter-cli
 
 if ! fc-list : family | grep -Fxq "JetBrainsMono Nerd Font"; then
