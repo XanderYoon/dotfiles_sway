@@ -1,8 +1,4 @@
-tt.*
-.tests
-doc/tags
-debug
-.repro
-foo.*
-*.log
-data
+# Neovim can create local temporary files while editing configuration.
+*.swp
+*.swo
+*~

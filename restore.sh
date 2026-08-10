@@ -19,11 +19,28 @@ link () {
   ln -s "$1" "$2"
 }
 
-# Link each managed config directory into ~/.config.
+case "$(uname -s)" in
+  Linux) platform="linux" ;;
+  Darwin) platform="macos" ;;
+  *)
+    echo "Unsupported platform: $(uname -s)" >&2
+    exit 1
+    ;;
+esac
+
+# Link shared config directories into ~/.config.
 for src in "$DOTFILES_ROOT"/config/*; do
   [[ -e "$src" ]] || continue
+  case "$(basename "$src")" in
+    lazygit|tmux) continue ;;
+  esac
   link "$src" "$HOME/.config/$(basename "$src")"
 done
+
+# Lazygit and tmux use platform-specific keybinding variants.
+link "$DOTFILES_ROOT/config/lazygit/$platform" "$HOME/.config/lazygit"
+link "$DOTFILES_ROOT/config/tmux/$platform" "$HOME/.config/tmux"
+link "$DOTFILES_ROOT/config/tmux/$platform/tmux.conf" "$HOME/.tmux.conf"
 
 # Link top-level dotfiles from home/ into ~, but keep .local granular.
 for src in "$DOTFILES_ROOT"/home/* "$DOTFILES_ROOT"/home/.[!.]* "$DOTFILES_ROOT"/home/..?*; do

@@ -25,6 +25,7 @@ window#waybar {
 #custom-gpu,
 #custom-separator,
 #custom-caffeine,
+#custom-bluetooth,
 #network,
 #custom-power {
   padding: 0 10px;
@@ -57,6 +58,7 @@ window#waybar {
 }
 
 #custom-caffeine,
+#custom-bluetooth,
 #network,
 #custom-power {
   margin-left: 6px;

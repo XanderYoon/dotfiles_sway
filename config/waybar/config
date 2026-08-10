@@ -11,6 +11,7 @@
     "custom/gpu",
     "custom/separator",
     "custom/caffeine",
+    "custom/bluetooth",
     "network",
     "custom/power"
   ],
@@ -52,6 +53,12 @@
     "signal": 1,
     "return-type": "text",
     "on-click": "/home/alexander-yoon/.local/bin/caffeine.sh toggle"
+  },
+  "custom/bluetooth": {
+    "interval": 5,
+    "exec": "/home/alexander-yoon/.local/bin/bluetooth.sh status",
+    "return-type": "json",
+    "on-click": "/home/alexander-yoon/.local/bin/bluetooth.sh menu"
   },
   "network": {
     "interval": 5,
