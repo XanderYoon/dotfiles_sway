@@ -32,7 +32,7 @@ esac
 for src in "$DOTFILES_ROOT"/config/*; do
   [[ -e "$src" ]] || continue
   case "$(basename "$src")" in
-    lazygit|tmux) continue ;;
+    lazygit|systemd|tmux) continue ;;
   esac
   link "$src" "$HOME/.config/$(basename "$src")"
 done

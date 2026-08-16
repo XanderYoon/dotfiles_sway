@@ -30,6 +30,17 @@ link() {
   echo "Linked ${target} -> ${source}"
 }
 
+remove_stale_tmux_service() {
+  local user_systemd_dir="$HOME/.config/systemd/user"
+
+  rm -f "$user_systemd_dir/tmux.service"
+  rm -f "$user_systemd_dir/default.target.wants/tmux.service"
+
+  if command -v systemctl >/dev/null 2>&1; then
+    systemctl --user daemon-reload || true
+  fi
+}
+
 sudo apt-get update
 sudo apt-get install -y build-essential ca-certificates curl default-jdk fish fontconfig git kitty neovim nodejs npm ripgrep tmux unzip wl-clipboard
 npm install --prefix "$HOME/.local" tree-sitter-cli
@@ -51,4 +62,5 @@ link "$repo_root/config/nvim" "$HOME/.config/nvim"
 if [[ -f "$repo_root/config/tmux/tmux.conf" ]]; then
   link "$repo_root/config/tmux/tmux.conf" "$HOME/.tmux.conf"
 fi
+remove_stale_tmux_service
 echo "Setup complete. Restart Kitty to use JetBrainsMono Nerd Font."
