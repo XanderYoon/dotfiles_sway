@@ -30,6 +30,19 @@ link() {
   echo "Linked ${target} -> ${source}"
 }
 
+install_tpm() {
+  local tpm_dir="$HOME/.tmux/plugins/tpm"
+
+  mkdir -p "$(dirname "$tpm_dir")"
+  if [[ ! -d "$tpm_dir/.git" ]]; then
+    git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+  else
+    git -C "$tpm_dir" pull --ff-only
+  fi
+
+  TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins" "$tpm_dir/bin/install_plugins"
+}
+
 remove_stale_tmux_service() {
   local user_systemd_dir="$HOME/.config/systemd/user"
 
@@ -59,8 +72,9 @@ fi
 
 link "$repo_root/config/kitty" "$HOME/.config/kitty"
 link "$repo_root/config/nvim" "$HOME/.config/nvim"
-if [[ -f "$repo_root/config/tmux/tmux.conf" ]]; then
-  link "$repo_root/config/tmux/tmux.conf" "$HOME/.tmux.conf"
-fi
+link "$repo_root/config/tmux/linux" "$HOME/.config/tmux"
+link "$repo_root/config/tmux/linux/tmux.conf" "$HOME/.tmux.conf"
+install_tpm
 remove_stale_tmux_service
+
 echo "Setup complete. Restart Kitty to use JetBrainsMono Nerd Font."
