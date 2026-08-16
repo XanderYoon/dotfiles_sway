@@ -35,7 +35,6 @@ input type:pointer {
 set $term /home/alexander-yoon/.local/bin/launch-kitty.sh
 set $menu wofi --show drun
 set $mediactl /home/alexander-yoon/.dotfiles_sway/local/bin/mediactl.sh
-set $private_browser /home/alexander-yoon/.dotfiles_sway/local/bin/private-browser.sh
 set $shotdir $HOME/Pictures/screenshots
 
 floating_modifier $mod
@@ -60,7 +59,6 @@ client.background #11111b
 
 bindsym $mod+Return exec $term
 bindsym $mod+d exec $menu
-bindsym $mod+Shift+n exec --no-startup-id $private_browser
 bindsym $mod+Shift+q kill
 
 bindsym --locked --inhibited XF86AudioPlay exec --no-startup-id $mediactl play-pause

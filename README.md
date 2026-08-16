@@ -1,9 +1,5 @@
 # Dotfiles
 
-## Private Browser
-
-Use [private-browser.sh](/home/alexander-yoon/.dotfiles_sway/local/bin/private-browser.sh:1) to launch a disposable Firejail browser session with a fresh temporary profile.
-
 ## Revert one config
 rm ~/.bashrc
 cp ~/.dotfiles/home/.bashrc ~/.bashrc
