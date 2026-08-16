@@ -1,9 +1,18 @@
 -- Personal Neovim configuration.
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.incsearch = true
 vim.opt.scrolloff = 8
 vim.opt.clipboard = "unnamedplus"
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
 
 local function leading_indent(line)
   return #(line:match("^[ \t]*") or "")
@@ -54,6 +63,9 @@ vim.keymap.set("n", "<C-c>", [["+yy]], { desc = "Copy line to clipboard" })
 vim.keymap.set("v", "<C-c>", [["+y]], { desc = "Copy selection to clipboard" })
 vim.keymap.set({ "n", "v" }, "<C-v>", [["+p]], { desc = "Paste from clipboard" })
 vim.keymap.set("i", "<C-v>", "<C-r>+", { desc = "Paste from clipboard" })
+vim.keymap.set("n", "<leader>z", "za", { desc = "Toggle fold" })
+vim.keymap.set("n", "<leader>Z", "zM", { desc = "Close all folds" })
+vim.keymap.set("n", "<leader>o", "zR", { desc = "Open all folds" })
 
 local undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.fn.mkdir(undodir, "p")
@@ -73,7 +85,41 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   { "catppuccin/nvim", name = "catppuccin", lazy = false, priority = 1000, opts = { flavour = "mocha" }, config = function(_, opts) require("catppuccin").setup(opts); vim.cmd.colorscheme("catppuccin") end },
-  { "mason-org/mason-lspconfig.nvim", lazy = false, dependencies = { { "mason-org/mason.nvim", opts = {} }, "neovim/nvim-lspconfig" }, opts = { ensure_installed = { "pyright", "clangd", "jdtls", "rust_analyzer" } } },
+  {
+    "mason-org/mason-lspconfig.nvim", lazy = false,
+    dependencies = { { "mason-org/mason.nvim", opts = {} }, "neovim/nvim-lspconfig" },
+    config = function()
+      local servers = { "pyright", "clangd", "jdtls", "rust_analyzer" }
+      require("mason-lspconfig").setup({ ensure_installed = servers, automatic_enable = true })
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(event)
+          local function map(keys, action, desc)
+            vim.keymap.set("n", keys, action, { buffer = event.buf, desc = desc })
+          end
+
+          local function telescope_or_lsp(telescope_picker, lsp_action)
+            return function()
+              local ok, builtin = pcall(require, "telescope.builtin")
+              if ok then builtin[telescope_picker]() else lsp_action() end
+            end
+          end
+
+          map("gd", telescope_or_lsp("lsp_definitions", vim.lsp.buf.definition), "Go to definition")
+          map("gD", vim.lsp.buf.declaration, "Go to declaration")
+          map("gr", telescope_or_lsp("lsp_references", vim.lsp.buf.references), "Go to references")
+          map("gI", telescope_or_lsp("lsp_implementations", vim.lsp.buf.implementation), "Go to implementation")
+          map("K", vim.lsp.buf.hover, "Hover documentation")
+          map("<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+          map("<leader>ca", vim.lsp.buf.code_action, "Code action")
+          map("<leader>d", vim.diagnostic.open_float, "Line diagnostics")
+          map("[d", vim.diagnostic.goto_prev, "Previous diagnostic")
+          map("]d", vim.diagnostic.goto_next, "Next diagnostic")
+        end,
+      })
+
+    end,
+  },
   {
     "nvim-treesitter/nvim-treesitter", lazy = false, build = ":TSUpdate",
     config = function()
@@ -92,10 +138,48 @@ require("lazy").setup({
       vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Find text" })
       vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffers" })
       vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Find help" })
+      vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "Find diagnostics" })
+      vim.keymap.set("n", "<leader>fs", builtin.lsp_document_symbols, { desc = "Find document symbols" })
+      vim.keymap.set("n", "<leader>fS", builtin.lsp_workspace_symbols, { desc = "Find workspace symbols" })
       vim.keymap.set("n", "<leader>pf", builtin.find_files, {})
       vim.keymap.set("n", "<C-p>", builtin.git_files, {})
       vim.keymap.set("n", "<leader>ps", function() builtin.grep_string({ search = vim.fn.input("Grep > ") }) end)
     end,
+  },
+  {
+    "nvim-pack/nvim-spectre",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    keys = {
+      { "<leader>sr", function() require("spectre").open() end, desc = "Find and replace" },
+      { "<leader>sw", function() require("spectre").open_visual({ select_word = true }) end, desc = "Replace word" },
+      { "<leader>sr", function() require("spectre").open_visual() end, mode = "v", desc = "Replace selection" },
+      { "<leader>sp", function() require("spectre").open_file_search({ select_word = true }) end, desc = "Replace in file" },
+    },
+  },
+  {
+    "nvim-tree/nvim-tree.lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = {
+      { "<leader>e", "<cmd>NvimTreeFindFileToggle<cr>", desc = "Toggle file tree" },
+    },
+    opts = {
+      disable_netrw = true,
+      hijack_netrw = true,
+      update_focused_file = { enable = true },
+      view = { width = 32 },
+      renderer = {
+        group_empty = true,
+        indent_markers = { enable = true },
+      },
+      filters = { dotfiles = false },
+    },
+  },
+  {
+    "stevearc/oil.nvim",
+    opts = { view_options = { show_hidden = true } },
+    keys = {
+      { "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
+    },
   },
   { "christoomey/vim-tmux-navigator", lazy = false },
   { "mbbill/undotree", keys = { { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Toggle undo tree" } } },
