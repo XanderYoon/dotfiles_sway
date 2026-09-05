@@ -13,6 +13,11 @@ vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.expandtab = true
+vim.opt.smartindent = true
 
 local function leading_indent(line)
   return #(line:match("^[ \t]*") or "")
@@ -87,9 +92,11 @@ require("lazy").setup({
   { "catppuccin/nvim", name = "catppuccin", lazy = false, priority = 1000, opts = { flavour = "mocha" }, config = function(_, opts) require("catppuccin").setup(opts); vim.cmd.colorscheme("catppuccin") end },
   {
     "mason-org/mason-lspconfig.nvim", lazy = false,
-    dependencies = { { "mason-org/mason.nvim", opts = {} }, "neovim/nvim-lspconfig" },
+    dependencies = { { "mason-org/mason.nvim", opts = {} }, "neovim/nvim-lspconfig", "hrsh7th/cmp-nvim-lsp" },
     config = function()
       local servers = { "pyright", "clangd", "jdtls", "rust_analyzer" }
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+      vim.lsp.config("*", { capabilities = capabilities })
       require("mason-lspconfig").setup({ ensure_installed = servers, automatic_enable = true })
 
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -118,6 +125,69 @@ require("lazy").setup({
         end,
       })
 
+    end,
+  },
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-nvim-lsp",
+      "L3MON4D3/LuaSnip",
+      "saadparwaiz1/cmp_luasnip",
+    },
+    config = function()
+      local cmp = require("cmp")
+      local luasnip = require("luasnip")
+
+      cmp.setup({
+        snippet = {
+          expand = function(args) luasnip.lsp_expand(args.body) end,
+        },
+        mapping = cmp.mapping.preset.insert({
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+        }),
+        sources = cmp.config.sources({
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+          { name = "path" },
+        }, {
+          { name = "buffer" },
+        }),
+      })
+    end,
+  },
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    opts = {},
+    config = function(_, opts)
+      require("nvim-autopairs").setup(opts)
+
+      local ok_cmp, cmp = pcall(require, "cmp")
+      if ok_cmp then
+        local ok_pairs, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
+        if ok_pairs then cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done()) end
+      end
     end,
   },
   {
